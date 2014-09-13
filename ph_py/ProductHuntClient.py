@@ -1,5 +1,5 @@
 import requests as r
-
+from ph_py.models.post import Post
 
 class ProductHuntClient:
     API_BASE = "https://api.producthunt.com/v1/"
@@ -14,7 +14,7 @@ class ProductHuntClient:
 
     def build_header(self, context):
         if context == "client":
-            if self.user_auth is None:
+            if self.client_auth is None:
                 raise Exception('No client authenticated!')
 
             return {"Authorization": "Bearer %s" % self.client_auth['access_token']}
@@ -32,7 +32,7 @@ class ProductHuntClient:
             headers = self.build_header(context)
 
         if method == "GET":
-            pass
+            response = r.get(url, headers=headers, data=data)
         elif method == "POST":
             response = r.post(url, headers=headers, data=data)
 
@@ -66,6 +66,27 @@ class ProductHuntClient:
         self.client_auth = self.make_request("POST", "oauth/token", data, '')
         return self.client_auth
 
+    def get_todays_posts(self, context="client"):
+        responses = self.make_request("GET", "posts", None, context)
+        responses = responses["posts"]
+        return [
+            Post(
+            response["id"],
+            response["name"],
+            response["tagline"],
+            response["created_at"],
+            response["day"],
+            response["comments_count"],
+            response["votes_count"],
+            response["discussion_url"],
+            response["redirect_url"],
+            response["screenshot_url"],
+            response["maker_inside"],
+            response["user"],
+            response["current_user"] if "current_user" in response else None
+        ) for response in responses
+        ]
+
 
 def main():
     client_id = "35587d189b3370c86629d4ba77027cfcaa6130970e4d3217da383042450ff501"
@@ -73,6 +94,9 @@ def main():
     redirect_uri = "http://localhost:5000"
 
     phc = ProductHuntClient(client_id, client_secret, redirect_uri)
+    phc.oauth_client_token()
+    todays_posts = phc.get_todays_posts()
+    print "hello"
 
 
 if __name__ == "__main__":
