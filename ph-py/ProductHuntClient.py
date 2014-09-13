@@ -69,6 +69,8 @@ class ProductHuntClient:
         return self.client_auth
 
 
+
+
 def main():
     client_id = "35587d189b3370c86629d4ba77027cfcaa6130970e4d3217da383042450ff501"
     client_secret = "42a385e7aae68c1ef243ae2634864ee7bc0576f66550f22149d510173c728cd8"
