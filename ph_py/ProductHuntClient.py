@@ -12,7 +12,7 @@ class ProductHuntClient:
         self.redirect_uri = redirect_uri
 
         if dev_token:
-            self.client_auth = {'access_token': dev_token}
+            self.client_auth = {"access_token": dev_token}
         else:
             self.client_auth = None
 
@@ -21,16 +21,16 @@ class ProductHuntClient:
     def build_header(self, context):
         if context == "client":
             if self.client_auth is None:
-                raise Exception('No client authenticated!')
+                raise Exception("No client authenticated!")
 
-            return {"Authorization": "Bearer %s" % self.client_auth['access_token']}
+            return {"Authorization": "Bearer %s" % self.client_auth["access_token"]}
         elif context == "user":
             if self.user_auth is None:
-                raise Exception('No user authenticated!')
+                raise Exception("No user authenticated!")
 
-            return {"Authorization": "Bearer %s" % self.user_auth['access_token']}
+            return {"Authorization": "Bearer %s" % self.user_auth["access_token"]}
 
-    def make_request(self, method, route, data, context=''):
+    def make_request(self, method, route, data, context=""):
         url = self.API_BASE + route
 
         headers = {}
@@ -59,7 +59,7 @@ class ProductHuntClient:
             "code": code
         }
 
-        self.user_auth = self.make_request("POST", "oauth/token", data, '')
+        self.user_auth = self.make_request("POST", "oauth/token", data, "")
         return self.user_auth
 
     def oauth_client_token(self):
@@ -69,7 +69,7 @@ class ProductHuntClient:
             "grant_type": "client_credentials"
         }
 
-        self.client_auth = self.make_request("POST", "oauth/token", data, '')
+        self.client_auth = self.make_request("POST", "oauth/token", data, "")
         return self.client_auth
 
     def get_todays_posts(self, context="client"):
