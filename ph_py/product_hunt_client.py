@@ -1,6 +1,7 @@
 import requests as r
-from ph_py.models.post import Post
 import helpers
+from ph_py.models.user import User
+
 
 class ProductHuntClient:
     API_BASE = "https://api.producthunt.com/v1/"
@@ -8,24 +9,28 @@ class ProductHuntClient:
     def __init__(self, client_id, client_secret, redirect_uri, dev_token=None):
         self.client_id = client_id
         self.client_secret = client_secret
-        self.dev_token = dev_token
         self.redirect_uri = redirect_uri
+
+        if dev_token:
+            self.client_auth = {"access_token": dev_token}
+        else:
+            self.client_auth = None
+
         self.user_auth = None
-        self.client_auth = None
 
     def build_header(self, context):
         if context == "client":
             if self.client_auth is None:
-                raise Exception('No client authenticated!')
+                raise Exception("No client authenticated!")
 
-            return {"Authorization": "Bearer %s" % self.client_auth['access_token']}
+            return {"Authorization": "Bearer %s" % self.client_auth["access_token"]}
         elif context == "user":
             if self.user_auth is None:
-                raise Exception('No user authenticated!')
+                raise Exception("No user authenticated!")
 
-            return {"Authorization": "Bearer %s" % self.user_auth['access_token']}
+            return {"Authorization": "Bearer %s" % self.user_auth["access_token"]}
 
-    def make_request(self, method, route, data, context=''):
+    def make_request(self, method, route, data, context=""):
         url = self.API_BASE + route
 
         headers = {}
@@ -41,7 +46,7 @@ class ProductHuntClient:
 
     def build_authorize_url(self):
         url = self.API_BASE + "oauth/authorize?client_id=%s&redirect_uri=%s&response_type=code&scope=public private" % \
-            (self.client_id, self.redirect_uri)
+              (self.client_id, self.redirect_uri)
 
         return url
 
@@ -54,17 +59,17 @@ class ProductHuntClient:
             "code": code
         }
 
-        self.user_auth = self.make_request("POST", "oauth/token", data, '')
+        self.user_auth = self.make_request("POST", "oauth/token", data, "")
         return self.user_auth
 
     def oauth_client_token(self):
         data = {
-            "client_id" : self.client_id,
-            "client_secret" : self.client_secret,
-            "grant_type" : "client_credentials"
+            "client_id": self.client_id,
+            "client_secret": self.client_secret,
+            "grant_type": "client_credentials"
         }
 
-        self.client_auth = self.make_request("POST", "oauth/token", data, '')
+        self.client_auth = self.make_request("POST", "oauth/token", data, "")
         return self.client_auth
 
     def get_todays_posts(self, context="client"):
@@ -82,6 +87,48 @@ class ProductHuntClient:
         responses = responses["posts"]
         return helpers.create_post(responses)
 
+    def get_users(self, older=None, newer=None, per_page=100, order=None, context="client"):
+        data = {
+            "per_page": per_page
+        }
+
+        if older:
+            data["older"] = older
+        if newer:
+            data["newer"] = newer
+        if order:
+            data["order"] = order
+
+        users = self.make_request("GET", "users", data, context)
+        users = users["users"]
+
+        return [
+            User(
+                user["id"],
+                user["name"],
+                user["headline"],
+                user["created_at"],
+                user["username"],
+                user["image_url"],
+                user["profile_url"],
+            )
+            for user in users]
+
+    def get_user(self, username, context="client"):
+        user = self.make_request("GET", "users/%s" % username, None, context)
+        user = user["user"]
+
+        return User(
+            user["id"],
+            user["name"],
+            user["headline"],
+            user["created_at"],
+            user["username"],
+            user["image_url"],
+            user["profile_url"],
+        )
+
+
 def main():
     client_id = "35587d189b3370c86629d4ba77027cfcaa6130970e4d3217da383042450ff501"
     client_secret = "42a385e7aae68c1ef243ae2634864ee7bc0576f66550f22149d510173c728cd8"
@@ -89,9 +136,6 @@ def main():
 
     phc = ProductHuntClient(client_id, client_secret, redirect_uri)
     phc.oauth_client_token()
-    todays_posts = phc.get_todays_posts()
-    specificday = phc.get_specific_days_posts("2014-01-02")
-    print "hello"
 
 
 if __name__ == "__main__":
