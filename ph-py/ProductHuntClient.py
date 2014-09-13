@@ -1,5 +1,3 @@
-__author__ = 'ag'
-
 import requests as r
 
 
@@ -41,20 +39,21 @@ class ProductHuntClient:
         return response.json()
 
     def build_authorize_url(self):
-        url = self.API_BASE + "oauth/authorize?client_id=%s&redirect_uri=%s&response_type=code&scope=public private"%(self.client_id, self.redirect_uri)
+        url = self.API_BASE + "oauth/authorize?client_id=%s&redirect_uri=%s&response_type=code&scope=public private" % \
+            (self.client_id, self.redirect_uri)
+
         return url
 
     def oauth_user_token(self, code):
         data = {
-            "client_id" : self.client_id,
-            "client_secret" : self.client_secret,
-            "redirect_uri" : self.redirect_uri,
-            "grant_type" : "authorization_code",
-            "code" : code
+            "client_id": self.client_id,
+            "client_secret": self.client_secret,
+            "redirect_uri": self.redirect_uri,
+            "grant_type": "authorization_code",
+            "code": code
         }
-        response = self.make_request("POST", "oauth/token", data, '')
 
-        self.user_auth = response
+        self.user_auth = self.make_request("POST", "oauth/token", data, '')
         return self.user_auth
 
     def oauth_client_token(self):
@@ -63,12 +62,9 @@ class ProductHuntClient:
             "client_secret" : self.client_secret,
             "grant_type" : "client_credentials"
         }
-        response = self.make_request("POST", "oauth/token", data, '')
 
-        self.client_auth = response
+        self.client_auth = self.make_request("POST", "oauth/token", data, '')
         return self.client_auth
-
-
 
 
 def main():
