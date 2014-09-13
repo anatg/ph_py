@@ -1,6 +1,5 @@
-import requests as r
 import helpers
-from ph_py.models.user import User
+import requests as r
 
 
 class ProductHuntClient:
@@ -75,17 +74,20 @@ class ProductHuntClient:
     def get_todays_posts(self, context="client"):
         responses = self.make_request("GET", "posts", None, context)
         responses = responses["posts"]
-        return helpers.create_post(responses)
 
-    def get_previous_days_posts(self, days_ago, context='client'):
+        return helpers.parse_posts(responses)
+
+    def get_previous_days_posts(self, days_ago, context="client"):
         responses = self.make_request("GET", "posts", {"days_ago": days_ago}, context)
         responses = responses["posts"]
-        return helpers.create_post(responses)
 
-    def get_specific_days_posts(self, day, context='client'):
+        return helpers.parse_posts(responses)
+
+    def get_specific_days_posts(self, day, context="client"):
         responses = self.make_request("GET", "posts", {"day": day}, context)
         responses = responses["posts"]
-        return helpers.create_post(responses)
+
+        return helpers.parse_posts(responses)
 
     def get_users(self, older=None, newer=None, per_page=100, order=None, context="client"):
         data = {
@@ -100,33 +102,11 @@ class ProductHuntClient:
             data["order"] = order
 
         users = self.make_request("GET", "users", data, context)
-        users = users["users"]
-
-        return [
-            User(
-                user["id"],
-                user["name"],
-                user["headline"],
-                user["created_at"],
-                user["username"],
-                user["image_url"],
-                user["profile_url"],
-            )
-            for user in users]
+        return helpers.parse_users(users["users"])
 
     def get_user(self, username, context="client"):
         user = self.make_request("GET", "users/%s" % username, None, context)
-        user = user["user"]
-
-        return User(
-            user["id"],
-            user["name"],
-            user["headline"],
-            user["created_at"],
-            user["username"],
-            user["image_url"],
-            user["profile_url"],
-        )
+        return helpers.parse_users(user["user"])
 
 
 def main():
