@@ -1,5 +1,6 @@
 import requests as r
 from ph_py.models.post import Post
+import helpers
 
 class ProductHuntClient:
     API_BASE = "https://api.producthunt.com/v1/"
@@ -69,24 +70,17 @@ class ProductHuntClient:
     def get_todays_posts(self, context="client"):
         responses = self.make_request("GET", "posts", None, context)
         responses = responses["posts"]
-        return [
-            Post(
-            response["id"],
-            response["name"],
-            response["tagline"],
-            response["created_at"],
-            response["day"],
-            response["comments_count"],
-            response["votes_count"],
-            response["discussion_url"],
-            response["redirect_url"],
-            response["screenshot_url"],
-            response["maker_inside"],
-            response["user"],
-            response["current_user"] if "current_user" in response else None
-        ) for response in responses
-        ]
+        return helpers.create_post(responses)
 
+    def get_previous_days_posts(self, days_ago, context='client'):
+        responses = self.make_request("GET", "posts", {"days_ago": days_ago}, context)
+        responses = responses["posts"]
+        return helpers.create_post(responses)
+
+    def get_specific_days_posts(self, day, context='client'):
+        responses = self.make_request("GET", "posts", {"day": day}, context)
+        responses = responses["posts"]
+        return helpers.create_post(responses)
 
 def main():
     client_id = "35587d189b3370c86629d4ba77027cfcaa6130970e4d3217da383042450ff501"
@@ -96,6 +90,7 @@ def main():
     phc = ProductHuntClient(client_id, client_secret, redirect_uri)
     phc.oauth_client_token()
     todays_posts = phc.get_todays_posts()
+    specificday = phc.get_specific_days_posts("2014-01-02")
     print "hello"
 
 
