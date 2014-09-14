@@ -1,9 +1,10 @@
 from ph_py.models.post import Post
 from ph_py.models.user import User
 from ph_py.models.vote import Vote
+from ph_py.models.comment import Comment
+from ph_py.models.related_link import RelatedLink
 from ph_py.models.user_details import UserDetails
 from ph_py.models.notification import Notification
-from ph_py.models.related_link import RelatedLink
 
 
 def parse_notifications(notifications):
@@ -139,4 +140,34 @@ def parse_related_links(related_links):
             related_links["favicon"],
             related_links["post_id"],
             related_links["user_id"],
+        )
+
+
+def parse_comments(comments):
+    if isinstance(comments, list):
+        return [
+            Comment(
+                comment["id"],
+                comment["body"],
+                comment["created_at"],
+                comment["post_id"],
+                comment["parent_comment_id"],
+                comment["user_id"],
+                comment["child_comments_count"],
+                comment["maker"],
+                comment["user"],
+                comment["child_comments"]
+            ) for comment in comments]
+    else:
+        Comment(
+            comments["id"],
+            comments["body"],
+            comments["created_at"],
+            comments["post_id"],
+            comments["parent_comment_id"],
+            comments["user_id"],
+            comments["child_comments_count"],
+            comments["maker"],
+            comments["user"],
+            comments["child_comments"],
         )

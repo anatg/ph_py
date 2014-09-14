@@ -186,6 +186,20 @@ class ProductHuntClient:
         votes = self.make_request("GET", "posts/%d/votes" % post_id, data, context)
         return helpers.parse_votes(votes["votes"])
 
+    # Comments-related functions
+    def get_comments(self, post_id, older=None, newer=None, per_page=100, order=None, context="client"):
+        data = {"per_page": per_page}
+
+        if older:
+            data["older"] = older
+        if newer:
+            data["newer"] = newer
+        if order:
+            data["order"] = order
+
+        comments = self.make_request("GET", "posts/%d/comments" % post_id, data, context)
+        return helpers.parse_comments(comments["comments"])
+
     # Detail-related functions
     def get_details(self):
         details = self.make_request("GET", "me", None, "user")

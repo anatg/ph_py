@@ -4,9 +4,9 @@ from ph_py.models.user import User
 
 
 class Comment:
-    def __init__(self, id, body, created_at, post_id, parent_comment_id, user_id,
+    def __init__(self, comment_id, body, created_at, post_id, parent_comment_id, user_id,
                  child_comments_count, maker, user, child_comments=None):
-        self.id = id
+        self.id = comment_id
         self.body = body
         self.created_at = created_at
         self.post_id = post_id
@@ -40,9 +40,9 @@ class Comment:
                 child["user_id"],
                 child["child_comments_count"],
                 child["maker"],
-                child["user"]
+                child["user"],
+                child["child_comments"],
             )
-            to_insert.child_comments = Comment.build_comment_tree(child["child_comments"])
             child_objects.append(to_insert)
 
         return child_objects
