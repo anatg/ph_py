@@ -16,7 +16,8 @@ class Notification:
             from_user["headline"],
             from_user["created_at"],
             from_user["username"],
-            from_user["image_url"]
+            from_user["image_url"],
+            from_user["profile_url"]
         )
         self.to_user = User(
             to_user["id"],
@@ -24,6 +25,6 @@ class Notification:
             to_user["headline"],
             to_user["created_at"],
             to_user["username"],
-            to_user["image_url"]
+            to_user["image_url"],
+            to_user["profile_url"]
         )
-        self.profile_url = profile_url

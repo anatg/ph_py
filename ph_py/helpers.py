@@ -15,9 +15,9 @@ def parse_notifications(notifications):
                 notification["reference"],
                 notification["from_user"],
                 notification["to_user"],
-                notification["profile_url"]
             ) for notification in notifications
         ]
+
 
 def parse_posts(posts):
     if isinstance(posts, list):
