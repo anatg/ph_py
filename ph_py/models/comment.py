@@ -2,6 +2,7 @@ import ph_py.helpers
 
 
 class Comment:
+
     def __init__(self, comment_id, body, created_at, post_id, parent_comment_id, user_id,
                  child_comments_count, maker, user, child_comments=None):
         self.id = comment_id

@@ -5,6 +5,7 @@ from simplejson.scanner import JSONDecodeError
 
 
 class ProductHuntClient:
+
     API_VERSION = 1
     API_BASE = "https://api.producthunt.com/v%d/" % API_VERSION
     ERROR_CODES = (401, 403, 404, 422)

@@ -2,6 +2,7 @@ import ph_py.helpers
 
 
 class Notification:
+
     def __init__(self, notification_id, body, seen, sentence, type, reference, from_user, to_user):
         self.notification_id = notification_id
         self.body = body

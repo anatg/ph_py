@@ -1,4 +1,5 @@
 class RelatedLink:
+
     def __init__(self, related_link_id, url, title, domain, favicon, post_id, user_id):
         self.id = related_link_id
         self.url = url
