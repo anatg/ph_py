@@ -5,18 +5,17 @@ from ph_py.models.notification import Notification
 
 
 def parse_notifications(notifications):
-    if isinstance(notifications, list):
-        return [
-            Notification(
-                notification["id"],
-                notification["body"],
-                notification["seen"],
-                notification["type"],
-                notification["reference"],
-                notification["from_user"],
-                notification["to_user"],
-            ) for notification in notifications
-        ]
+    return [
+        Notification(
+            notification["id"],
+            notification["body"],
+            notification["seen"],
+            notification["type"],
+            notification["reference"],
+            notification["from_user"],
+            notification["to_user"]
+        ) for notification in notifications
+    ]
 
 
 def parse_posts(posts):

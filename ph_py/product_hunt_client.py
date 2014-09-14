@@ -51,7 +51,7 @@ class ProductHuntClient:
 
         return url
 
-    #oauth
+    # OAuth helpers
     def oauth_user_token(self, code):
         data = {
             "client_id": self.client_id,
@@ -93,22 +93,24 @@ class ProductHuntClient:
 
         return helpers.parse_posts(responses)
 
-    #need to parse for comments, votes, and related links
+    # Need to parse for comments, votes, and related links
     def get_details_of_post(self, post_id, context='client'):
-        responses = self.make_request("GET", "posts/%d" % post_id, None, context)
-        responses = responses["posts"]
-        return helpers.parse_posts(responses)
+        post = self.make_request("GET", "posts/%d" % post_id, None, context)
+        return helpers.parse_posts(post["posts"])
 
-    #need write-access for API
+    # Need write-access for API
     def create_a_post(self, url, name, tagline):
-        data = {"post": {"url": url,
-                         "name": name,
-                         "tagline": tagline}}
-        response = self.make_request("POST", "posts", data, 'user')
-        response = response["post"]
-        return helpers.create_post(response)
+        data = {
+            "post": {
+                "url": url,
+                 "name": name,
+                 "tagline": tagline
+            }
+        }
+        post = self.make_request("POST", "posts", data, 'user')
+        return helpers.parse_posts(post["post"])
 
-    #Notification-related functions
+    # Notification-related functions
     def show_notifications(self, older=None, newer=None, per_page=100, order=None):
         data = {
             "per_page": per_page
