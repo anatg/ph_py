@@ -11,11 +11,11 @@ class ProductHuntClient:
         self.redirect_uri = redirect_uri
 
         if dev_token:
-            self.client_auth = {"access_token": dev_token}
+            self.user_auth = {"access_token": dev_token}
         else:
-            self.client_auth = None
+            self.user_auth = None
 
-        self.user_auth = None
+        self.client_auth = None
 
     def build_header(self, context):
         if context == "client":
