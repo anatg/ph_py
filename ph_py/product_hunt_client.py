@@ -1,6 +1,5 @@
-import requests as r
 import helpers
-from ph_py.models.user import User
+import requests as r
 
 
 class ProductHuntClient:
@@ -77,23 +76,26 @@ class ProductHuntClient:
     def get_todays_posts(self, context="client"):
         responses = self.make_request("GET", "posts", None, context)
         responses = responses["posts"]
-        return helpers.create_post(responses)
 
-    def get_previous_days_posts(self, days_ago, context='client'):
+        return helpers.parse_posts(responses)
+
+    def get_previous_days_posts(self, days_ago, context="client"):
         responses = self.make_request("GET", "posts", {"days_ago": days_ago}, context)
         responses = responses["posts"]
-        return helpers.create_post(responses)
 
-    def get_specific_days_posts(self, day, context='client'):
+        return helpers.parse_posts(responses)
+
+    def get_specific_days_posts(self, day, context="client"):
         responses = self.make_request("GET", "posts", {"day": day}, context)
         responses = responses["posts"]
-        return helpers.create_post(responses)
+
+        return helpers.parse_posts(responses)
 
     #need to parse for comments, votes, and related links
     def get_details_of_post(self, post_id, context='client'):
         responses = self.make_request("GET", "posts/%d" % post_id, None, context)
         responses = responses["posts"]
-        return helpers.create_post(responses)
+        return helpers.parse_posts(responses)
 
     #need write-access for API
     def create_a_post(self, url, name, tagline):
@@ -104,6 +106,7 @@ class ProductHuntClient:
         response = response["post"]
         return helpers.create_post(response)
 
+    #Notification-related functions
     def show_notifications(self, older=None, newer=None, per_page=100, order=None):
         data = {
             "per_page": per_page
@@ -115,10 +118,14 @@ class ProductHuntClient:
         if order:
             data["order"] = order
 
-        notifications = self.make_request("GET", "notifications", data, context='user')
-        notifications = notifications["notifications"]
+        notifications = self.make_request("GET", "notifications", data, "user")
+        return helpers.parse_notifications(notifications["notifications"])
 
+    def clear_notifications(self):
+        notifications = self.make_request("DELETE", "notifications", None, "user")
+        return helpers.parse_notifications(notifications["notifications"])
 
+    #User-related functions
     def get_users(self, older=None, newer=None, per_page=100, order=None, context="client"):
         data = {
             "per_page": per_page
@@ -132,33 +139,11 @@ class ProductHuntClient:
             data["order"] = order
 
         users = self.make_request("GET", "users", data, context)
-        users = users["users"]
-
-        return [
-            User(
-                user["id"],
-                user["name"],
-                user["headline"],
-                user["created_at"],
-                user["username"],
-                user["image_url"],
-                user["profile_url"],
-            )
-            for user in users]
+        return helpers.parse_users(users["users"])
 
     def get_user(self, username, context="client"):
         user = self.make_request("GET", "users/%s" % username, None, context)
-        user = user["user"]
-
-        return User(
-            user["id"],
-            user["name"],
-            user["headline"],
-            user["created_at"],
-            user["username"],
-            user["image_url"],
-            user["profile_url"],
-        )
+        return helpers.parse_users(user["user"])
 
 
 def main():
@@ -168,8 +153,9 @@ def main():
 
     phc = ProductHuntClient(client_id, client_secret, redirect_uri)
     #print phc.build_authorize_url()
-    phc.oauth_user_token("83098fc2c2c436393ac3a348c0d98bb090c430070eb8c3125189c6d996e2ec57")
-    x = phc.create_a_post("http://beardedspice.com", "Bearded Spice", "Mac Media Keys for the Masses")
+    phc.oauth_user_token("d8f6953f5c7137ee4ea2760457152cf8988195e8486d560c3eb77020068ac609")
+    # x = phc.create_a_post("http://beardedspice.com", "Bearded Spice", "Mac Media Keys for the Masses")
+    print phc.show_notifications()
     print "hello"
 
 
