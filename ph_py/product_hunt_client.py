@@ -40,6 +40,8 @@ class ProductHuntClient:
             response = r.get(url, headers=headers, data=data)
         elif method == "POST":
             response = r.post(url, headers=headers, data=data)
+        elif method == "PUT":
+            response = r.put(url, headers=headers, data=data)
         elif method == "DELETE":
             response = r.delete(url, headers=headers, params=data)
 
@@ -94,7 +96,7 @@ class ProductHuntClient:
         return helpers.parse_posts(responses)
 
     # Need to parse for comments, votes, and related links
-    def get_details_of_post(self, post_id, context='client'):
+    def get_details_of_post(self, post_id, context="client"):
         post = self.make_request("GET", "posts/%d" % post_id, None, context)
         return helpers.parse_posts(post["posts"])
 
@@ -107,7 +109,7 @@ class ProductHuntClient:
                  "tagline": tagline
             }
         }
-        post = self.make_request("POST", "posts", data, 'user')
+        post = self.make_request("POST", "posts", data, "user")
         return helpers.parse_posts(post["post"])
 
     # Notification-related functions
@@ -190,6 +192,25 @@ class ProductHuntClient:
         votes = self.make_request("GET", "posts/%d/votes" % post_id, data, context)
         return helpers.parse_votes(votes["votes"])
 
+    def create_related_link(self, post_id, url, title=None):
+        data = {
+            "url": url
+        }
+
+        if title:
+            data["title"] = title
+
+        related_link = self.make_request("POST", "posts/%d/related_links" % post_id, data, "user")
+        return helpers.parse_related_links(related_link)
+    
+    def update_related_link(self, post_id, related_link_id, title):
+        data = {
+            "title": title
+        }
+
+        related_link = self.make_request("PUT", "posts/%d/related_links/%d" % (post_id, related_link_id), data, "user")
+        return helpers.parse_related_links(related_link)
+
 
 def main():
     client_id = "35587d189b3370c86629d4ba77027cfcaa6130970e4d3217da383042450ff501"
@@ -197,11 +218,6 @@ def main():
     redirect_uri = "http://localhost:5000"
 
     phc = ProductHuntClient(client_id, client_secret, redirect_uri)
-    #print phc.build_authorize_url()
-    phc.oauth_user_token("d8f6953f5c7137ee4ea2760457152cf8988195e8486d560c3eb77020068ac609")
-    # x = phc.create_a_post("http://beardedspice.com", "Bearded Spice", "Mac Media Keys for the Masses")
-    print phc.show_notifications()
-    print "hello"
 
 
 if __name__ == "__main__":

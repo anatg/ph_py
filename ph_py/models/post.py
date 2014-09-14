@@ -26,4 +26,4 @@ class Post:
             user["profile_url"]
         )
 
-        #TODO comments, votes, related_links
+        # TODO comments, votes, related_links
