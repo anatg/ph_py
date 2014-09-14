@@ -59,11 +59,11 @@ class ProductHuntClient:
 
     def build_authorize_url(self):
         url = self.API_BASE + "oauth/authorize?client_id=%s&redirect_uri=%s&response_type=code&scope=public private" % \
-              (self.client_id, self.redirect_uri)
+            (self.client_id, self.redirect_uri)
 
         return url
 
-    # OAuth h
+    # OAuth helpers
     def oauth_user_token(self, code):
         data = {
             "client_id": self.client_id,
@@ -115,8 +115,8 @@ class ProductHuntClient:
         data = {
             "post": {
                 "url": url,
-                 "name": name,
-                 "tagline": tagline
+                "name": name,
+                "tagline": tagline
             }
         }
         post = self.make_request("POST", "posts", data, "user")
@@ -167,7 +167,6 @@ class ProductHuntClient:
     def delete_vote(self, post_id):
         vote = self.make_request("DELETE", "posts/%d/vote" % post_id, None, "user")
 
-        # TODO: check if deleting a vote returns a vote
         return h.parse_votes(vote)
 
     def get_user_votes(self, user_id, older=None, newer=None, per_page=100, order=None, context="client"):
@@ -256,14 +255,7 @@ class ProductHuntClient:
 
 
 def main():
-    client_id = "35587d189b3370c86629d4ba77027cfcaa6130970e4d3217da383042450ff501"
-    client_secret = "42a385e7aae68c1ef243ae2634864ee7bc0576f66550f22149d510173c728cd8"
-    redirect_uri = "http://localhost:5000"
-    dev_token = "fcebcd0400a1a4b909e3e754af9a9b21d4e0f93551598e6ab3d231b8bd9b703"
-
-    phc = ProductHuntClient(client_id, client_secret, redirect_uri, dev_token)
-    phc.get_todays_posts(context="user")
-
+    pass
 
 if __name__ == "__main__":
     main()

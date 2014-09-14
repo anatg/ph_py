@@ -12,6 +12,7 @@ def parse_notifications(notifications):
             notification["id"],
             notification["body"],
             notification["seen"],
+            notification["sentence"],
             notification["type"],
             notification["reference"],
             notification["from_user"],

@@ -15,7 +15,6 @@ class Comment:
         self.user = ph_py.helpers.parse_users(user)
         self.child_comments = self.build_comment_tree(child_comments)
 
-
     @staticmethod
     def build_comment_tree(children):
         child_objects = []

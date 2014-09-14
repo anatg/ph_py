@@ -2,16 +2,16 @@ from ph_py.models.user import User
 
 
 class UserDetails:
-    def __init__(self, id, name, headline, created_at, username, image_url, profile_url, votes_count, posts_count,
+    def __init__(self, user_id, name, headline, created_at, username, image_url, profile_url, votes_count, posts_count,
                  maker_of_count, email, role, permissions, notifications, first_time_user):
         self.user = User(
-             id,
-             name,
-             headline,
-             created_at,
-             username,
-             image_url,
-             profile_url
+            user_id,
+            name,
+            headline,
+            created_at,
+            username,
+            image_url,
+            profile_url
         )
         self.votes_count = votes_count
         self.posts_count = posts_count
