@@ -1,7 +1,7 @@
 __author__ = 'ag'
 
 from ph_py.models.user import User
-class Details:
+class UserDetails:
     def __init__(self, id, name, headline, created_at, username, image_url, profile_url, votes_count, posts_count,
                  maker_of_count, email, role, permissions, notifications, first_time_user):
         self.user = User(

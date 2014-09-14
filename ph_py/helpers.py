@@ -1,7 +1,7 @@
 from ph_py.models.post import Post
 from ph_py.models.user import User
 from ph_py.models.vote import Vote
-from ph_py.models.details import Details
+from ph_py.models.user_details import UserDetails
 from ph_py.models.notification import Notification
 from ph_py.models.related_link import RelatedLink
 
@@ -20,7 +20,7 @@ def parse_notifications(notifications):
     ]
 
 def parse_details(details):
-    return Details(
+    return UserDetails(
         details["id"],
         details["name"],
         details["headline"],
