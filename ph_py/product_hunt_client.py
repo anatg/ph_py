@@ -40,6 +40,8 @@ class ProductHuntClient:
             response = r.get(url, headers=headers, data=data)
         elif method == "POST":
             response = r.post(url, headers=headers, data=data)
+        elif method == "DELETE":
+            response = r.delete(url, headers=headers, params=data)
 
         return response.json()
 
@@ -71,6 +73,7 @@ class ProductHuntClient:
         self.client_auth = self.make_request("POST", "oauth/token", data, "")
         return self.client_auth
 
+    # Post-related functions
     def get_todays_posts(self, context="client"):
         responses = self.make_request("GET", "posts", None, context)
         responses = responses["posts"]
@@ -89,6 +92,7 @@ class ProductHuntClient:
 
         return helpers.parse_posts(responses)
 
+    # User-related functions
     def get_users(self, older=None, newer=None, per_page=100, order=None, context="client"):
         data = {
             "per_page": per_page
@@ -107,6 +111,47 @@ class ProductHuntClient:
     def get_user(self, username, context="client"):
         user = self.make_request("GET", "users/%s" % username, None, context)
         return helpers.parse_users(user["user"])
+
+    # Votes-related functions
+    def create_vote(self, post_id):
+        vote = self.make_request("POST", "posts/%d/vote" % post_id, None, "user")
+        return helpers.parse_votes(vote)
+
+    def delete_vote(self, post_id):
+        vote = self.make_request("DELETE", "posts/%d/vote" % post_id, None, "user")
+
+        # TODO: check if deleting a vote returns a vote
+        return helpers.parse_votes(vote)
+
+    def get_user_votes(self, user_id, older=None, newer=None, per_page=100, order=None, context="client"):
+        data = {
+            "per_page": per_page
+        }
+
+        if older:
+            data["older"] = older
+        if newer:
+            data["newer"] = newer
+        if order:
+            data["order"] = order
+
+        votes = self.make_request("GET", "users/%d/votes" % user_id, data, context)
+        return helpers.parse_votes(votes["votes"])
+
+    def get_post_votes(self, post_id, older=None, newer=None, per_page=100, order=None, context="client"):
+        data = {
+            "per_page": per_page
+        }
+
+        if older:
+            data["older"] = older
+        if newer:
+            data["newer"] = newer
+        if order:
+            data["order"] = order
+
+        votes = self.make_request("GET", "posts/%d/votes" % post_id, data, context)
+        return helpers.parse_votes(votes["votes"])
 
 
 def main():

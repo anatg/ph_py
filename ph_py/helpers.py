@@ -1,5 +1,6 @@
 from ph_py.models.post import Post
 from ph_py.models.user import User
+from ph_py.models.vote import Vote
 
 
 def parse_posts(posts):
@@ -59,4 +60,22 @@ def parse_users(users):
             users["username"],
             users["image_url"],
             users["profile_url"]
+        )
+
+
+def parse_votes(votes):
+    if isinstance(votes, list):
+        return [
+            Vote(
+                vote["id"],
+                vote["created_at"],
+                vote["post_id"],
+                vote["user"]
+            ) for vote in votes]
+    else:
+        Vote(
+            votes["id"],
+            votes["created_at"],
+            votes["post_id"],
+            votes["user"]
         )
