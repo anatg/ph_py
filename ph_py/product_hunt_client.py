@@ -1,9 +1,12 @@
 import helpers as h
 import requests as r
+from error import ProductHuntError
+from simplejson.scanner import JSONDecodeError
 
 
 class ProductHuntClient:
     API_BASE = "https://api.producthunt.com/v1/"
+    ERROR_CODES = (401, 403, 404, 422)
 
     def __init__(self, client_id, client_secret, redirect_uri, dev_token=None):
         self.client_id = client_id
@@ -20,12 +23,12 @@ class ProductHuntClient:
     def build_header(self, context):
         if context == "client":
             if self.client_auth is None:
-                raise Exception("No client authenticated!")
+                raise ProductHuntError("No client authenticated!")
 
             return {"Authorization": "Bearer %s" % self.client_auth["access_token"]}
         elif context == "user":
             if self.user_auth is None:
-                raise Exception("No user authenticated!")
+                raise ProductHuntError("No user authenticated!")
 
             return {"Authorization": "Bearer %s" % self.user_auth["access_token"]}
 
@@ -45,7 +48,14 @@ class ProductHuntClient:
         elif method == "DELETE":
             response = r.delete(url, headers=headers, params=data)
 
-        return response.json()
+        try:
+            json_data = response.json()
+            if response.status_code in self.ERROR_CODES:
+                raise ProductHuntError(json_data["error_description"], response.status_code)
+
+            return json_data
+        except JSONDecodeError:
+            raise ProductHuntError("Error parsing JSON from Product Hunt API")
 
     def build_authorize_url(self):
         url = self.API_BASE + "oauth/authorize?client_id=%s&redirect_uri=%s&response_type=code&scope=public private" % \
@@ -249,9 +259,10 @@ def main():
     client_id = "35587d189b3370c86629d4ba77027cfcaa6130970e4d3217da383042450ff501"
     client_secret = "42a385e7aae68c1ef243ae2634864ee7bc0576f66550f22149d510173c728cd8"
     redirect_uri = "http://localhost:5000"
-    dev_token = "fcebcd0400a1a4b909e3e754af9a9b21d4e0f93551598e6ab3d231b8bd9b703d"
+    dev_token = "fcebcd0400a1a4b909e3e754af9a9b21d4e0f93551598e6ab3d231b8bd9b703"
 
     phc = ProductHuntClient(client_id, client_secret, redirect_uri, dev_token)
+    phc.get_todays_posts(context="user")
 
 
 if __name__ == "__main__":
