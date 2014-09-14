@@ -11,11 +11,11 @@ class ProductHuntClient:
         self.redirect_uri = redirect_uri
 
         if dev_token:
-            self.client_auth = {"access_token": dev_token}
+            self.user_auth = {"access_token": dev_token}
         else:
-            self.client_auth = None
+            self.user_auth = None
 
-        self.user_auth = None
+        self.client_auth = None
 
     def build_header(self, context):
         if context == "client":
@@ -40,6 +40,8 @@ class ProductHuntClient:
             response = r.get(url, headers=headers, data=data)
         elif method == "POST":
             response = r.post(url, headers=headers, data=data)
+        elif method == "PUT":
+            response = r.put(url, headers=headers, data=data)
         elif method == "DELETE":
             response = r.delete(url, headers=headers, params=data)
 
@@ -94,7 +96,7 @@ class ProductHuntClient:
         return helpers.parse_posts(responses)
 
     # Need to parse for comments, votes, and related links
-    def get_details_of_post(self, post_id, context='client'):
+    def get_details_of_post(self, post_id, context="client"):
         post = self.make_request("GET", "posts/%d" % post_id, None, context)
         return helpers.parse_posts(post["posts"])
 
@@ -107,7 +109,7 @@ class ProductHuntClient:
                  "tagline": tagline
             }
         }
-        post = self.make_request("POST", "posts", data, 'user')
+        post = self.make_request("POST", "posts", data, "user")
         return helpers.parse_posts(post["post"])
 
     # Notification-related functions
@@ -131,9 +133,7 @@ class ProductHuntClient:
 
     # User-related functions
     def get_users(self, older=None, newer=None, per_page=100, order=None, context="client"):
-        data = {
-            "per_page": per_page
-        }
+        data = {"per_page": per_page}
 
         if older:
             data["older"] = older
@@ -161,9 +161,7 @@ class ProductHuntClient:
         return helpers.parse_votes(vote)
 
     def get_user_votes(self, user_id, older=None, newer=None, per_page=100, order=None, context="client"):
-        data = {
-            "per_page": per_page
-        }
+        data = {"per_page": per_page}
 
         if older:
             data["older"] = older
@@ -176,9 +174,7 @@ class ProductHuntClient:
         return helpers.parse_votes(votes["votes"])
 
     def get_post_votes(self, post_id, older=None, newer=None, per_page=100, order=None, context="client"):
-        data = {
-            "per_page": per_page
-        }
+        data = {"per_page": per_page}
 
         if older:
             data["older"] = older
@@ -195,17 +191,31 @@ class ProductHuntClient:
         details = self.make_request("GET", "me", None, "user")
         return helpers.parse_details(details["user"])
 
+    def create_related_link(self, post_id, url, title=None):
+        data = {"url": url}
+
+        if title:
+            data["title"] = title
+
+        related_link = self.make_request("POST", "posts/%d/related_links" % post_id, data, "user")
+        return helpers.parse_related_links(related_link)
+    
+    def update_related_link(self, post_id, related_link_id, title):
+        data = {"title": title}
+
+        related_link = self.make_request("PUT", "posts/%d/related_links/%d" % (post_id, related_link_id), data, "user")
+        return helpers.parse_related_links(related_link)
+
+
 def main():
     client_id = "35587d189b3370c86629d4ba77027cfcaa6130970e4d3217da383042450ff501"
     client_secret = "42a385e7aae68c1ef243ae2634864ee7bc0576f66550f22149d510173c728cd8"
     redirect_uri = "http://localhost:5000"
 
-    phc = ProductHuntClient(client_id, client_secret, redirect_uri)
-    #print phc.build_authorize_url()
-    phc.oauth_user_token("")
-    # x = phc.create_a_post("http://beardedspice.com", "Bearded Spice", "Mac Media Keys for the Masses")
-    print phc.get_details()
-    print "hello"
+    dev_token = "fcebcd0400a1a4b909e3e754af9a9b21d4e0f93551598e6ab3d231b8bd9b703d"
+    phc = ProductHuntClient(client_id, client_secret, redirect_uri, dev_token)
+
+
 
 
 if __name__ == "__main__":

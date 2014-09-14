@@ -3,6 +3,7 @@ from ph_py.models.user import User
 from ph_py.models.vote import Vote
 from ph_py.models.details import Details
 from ph_py.models.notification import Notification
+from ph_py.models.related_link import RelatedLink
 
 
 def parse_notifications(notifications):
@@ -20,7 +21,13 @@ def parse_notifications(notifications):
 
 def parse_details(details):
     return Details(
-        details["user"],
+        details["id"],
+        details["name"],
+        details["headline"],
+        details["created_at"],
+        details["username"],
+        details["image_url"],
+        details["profile_url"],
         details["votes_count"],
         details["posts_count"],
         details["maker_of_count"],
@@ -107,4 +114,28 @@ def parse_votes(votes):
             votes["created_at"],
             votes["post_id"],
             votes["user"]
+        )
+
+
+def parse_related_links(related_links):
+    if isinstance(related_links, list):
+        return [
+            RelatedLink(
+                related_link["id"],
+                related_link["url"],
+                related_link["title"],
+                related_link["domain"],
+                related_link["favicon"],
+                related_link["post_id"],
+                related_link["user_id"],
+            ) for related_link in related_links]
+    else:
+        RelatedLink(
+            related_links["id"],
+            related_links["url"],
+            related_links["title"],
+            related_links["domain"],
+            related_links["favicon"],
+            related_links["post_id"],
+            related_links["user_id"],
         )
