@@ -5,7 +5,8 @@ from simplejson.scanner import JSONDecodeError
 
 
 class ProductHuntClient:
-    API_BASE = "https://api.producthunt.com/v1/"
+    API_VERSION = 1
+    API_BASE = "https://api.producthunt.com/v%d/" % API_VERSION
     ERROR_CODES = (401, 403, 404, 422)
 
     def __init__(self, client_id, client_secret, redirect_uri, dev_token=None):
@@ -55,7 +56,7 @@ class ProductHuntClient:
 
             return json_data
         except JSONDecodeError:
-            raise ProductHuntError("Error parsing JSON from Product Hunt API")
+            raise ProductHuntError("Error in parsing JSON from the Product Hunt API")
 
     def build_authorize_url(self):
         url = self.API_BASE + "oauth/authorize?client_id=%s&redirect_uri=%s&response_type=code&scope=public private" % \
@@ -105,12 +106,10 @@ class ProductHuntClient:
 
         return h.parse_posts(responses)
 
-    # Need to parse for comments, votes, and related links
     def get_details_of_post(self, post_id, context="client"):
         post = self.make_request("GET", "posts/%d" % post_id, None, context)
         return h.parse_posts(post["post"])
 
-    # Need write-access for API
     def create_a_post(self, url, name, tagline):
         data = {
             "post": {
@@ -159,7 +158,7 @@ class ProductHuntClient:
         user = self.make_request("GET", "users/%s" % username, None, context)
         return h.parse_users(user["user"])
 
-    # Votes-related functions
+    # Vote-related functions
     def create_vote(self, post_id):
         vote = self.make_request("POST", "posts/%d/vote" % post_id, None, "user")
         return h.parse_votes(vote)
@@ -195,7 +194,7 @@ class ProductHuntClient:
         votes = self.make_request("GET", "posts/%d/votes" % post_id, data, context)
         return h.parse_votes(votes["votes"])
 
-    # Comments-related functions
+    # Comment-related functions
     def get_comments(self, post_id, older=None, newer=None, per_page=100, order=None, context="client"):
         data = {"per_page": per_page}
 
@@ -232,7 +231,7 @@ class ProductHuntClient:
         comment = self.make_request("PUT", "comments/%d" % comment_id, data, "user")
         return h.parse_comments(comment["comment"])
 
-    # Detail-related functions
+    # User Detail related functions
     def get_details(self):
         details = self.make_request("GET", "me", None, "user")
         return h.parse_details(details["user"])
@@ -252,10 +251,3 @@ class ProductHuntClient:
 
         related_link = self.make_request("PUT", "posts/%d/related_links/%d" % (post_id, related_link_id), data, "user")
         return h.parse_related_links(related_link)
-
-
-def main():
-    pass
-
-if __name__ == "__main__":
-    main()
