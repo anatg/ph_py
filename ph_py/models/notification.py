@@ -1,4 +1,4 @@
-import ph_py.helpers as helpers
+import ph_py.helpers
 
 
 class Notification:
@@ -9,7 +9,5 @@ class Notification:
         self.sentence = sentence
         self.type = type
         self.reference = reference
-
-        self.from_user = helpers.parse_users(from_user)
-
-        self.to_user = helpers.parse_users(to_user)
+        self.from_user = ph_py.helpers.parse_users(from_user)
+        self.to_user = ph_py.helpers.parse_users(to_user)

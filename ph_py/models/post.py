@@ -3,7 +3,7 @@ import ph_py.helpers as helpers
 
 class Post:
     def __init__(self, post_id, name, tagline, created_at, day, comments_count, votes_count, discussion_url,
-                 redirect_url, screenshot_url, maker_inside, user, current_user=None, comments=None, votes=None,
+                 redirect_url, screenshot_url, maker_inside, user, current_user, comments=None, votes=None,
                  related_links=None):
         self.id = post_id
         self.name = name

@@ -1,10 +1,9 @@
-from ph_py.models.post import Post
-from ph_py.models.user import User
-from ph_py.models.vote import Vote
-from ph_py.models.comment import Comment
-from ph_py.models.related_link import RelatedLink
-from ph_py.models.user_details import UserDetails
-from ph_py.models.notification import Notification
+from ph_py.models.post import *
+from ph_py.models.vote import *
+from ph_py.models.comment import *
+from ph_py.models.related_link import *
+from ph_py.models.user_details import *
+from ph_py.models.notification import *
 
 
 def parse_notifications(notifications):
@@ -57,7 +56,11 @@ def parse_posts(posts):
                 post["screenshot_url"],
                 post["maker_inside"],
                 post["user"],
-                post["current_user"] if "current_user" in post else None
+                post["current_user"] if "current_user" in post else None,
+                post["comments"],
+                post["votes"],
+                post["related_links"]
+
             ) for post in posts]
     else:
         return Post(
@@ -73,7 +76,10 @@ def parse_posts(posts):
             posts["screenshot_url"],
             posts["maker_inside"],
             posts["user"],
-            posts["current_user"] if "current_user" in posts else None
+            posts["current_user"] if "current_user" in posts else None,
+            posts["comments"],
+            posts["votes"],
+            posts["related_links"]
         )
 
 
@@ -90,7 +96,7 @@ def parse_users(users):
                 user["profile_url"]
             ) for user in users]
     else:
-        User(
+        return User(
             users["id"],
             users["name"],
             users["headline"],
@@ -111,7 +117,7 @@ def parse_votes(votes):
                 vote["user"]
             ) for vote in votes]
     elif votes:
-        Vote(
+        return Vote(
             votes["id"],
             votes["created_at"],
             votes["post_id"],
@@ -132,7 +138,7 @@ def parse_related_links(related_links):
                 related_link["user_id"],
             ) for related_link in related_links]
     elif related_links:
-        RelatedLink(
+        return RelatedLink(
             related_links["id"],
             related_links["url"],
             related_links["title"],
@@ -159,7 +165,7 @@ def parse_comments(comments):
                 comment["child_comments"]
             ) for comment in comments]
     elif comments:
-        Comment(
+        return Comment(
             comments["id"],
             comments["body"],
             comments["created_at"],
