@@ -1,4 +1,4 @@
-from ph_py.models.user import User
+import ph_py.helpers as helpers
 
 
 class Notification:
@@ -10,22 +10,6 @@ class Notification:
         self.type = type
         self.reference = reference
 
-        self.from_user = User(
-            from_user["id"],
-            from_user["name"],
-            from_user["headline"],
-            from_user["created_at"],
-            from_user["username"],
-            from_user["image_url"],
-            from_user["profile_url"]
-        )
+        self.from_user = helpers.parse_users(from_user)
 
-        self.to_user = User(
-            to_user["id"],
-            to_user["name"],
-            to_user["headline"],
-            to_user["created_at"],
-            to_user["username"],
-            to_user["image_url"],
-            to_user["profile_url"]
-        )
+        self.to_user = helpers.parse_users(to_user)
