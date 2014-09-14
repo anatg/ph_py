@@ -1,4 +1,4 @@
-from ph_py.models.user import User
+import ph_py.helpers as helpers
 
 
 class Comment:
@@ -12,15 +12,7 @@ class Comment:
         self.user_id = user_id
         self.child_comments_count = child_comments_count
         self.maker = maker
-        self.user = User(
-            user["id"],
-            user["name"],
-            user["headline"],
-            user["created_at"],
-            user["username"],
-            user["image_url"],
-            user["profile_url"]
-        )
+        self.user = helpers.parse_users(user)
         self.child_comments = self.build_comment_tree(child_comments)
 
 
@@ -29,18 +21,7 @@ class Comment:
         child_objects = []
 
         for child in children:
-            to_insert = Comment(
-                child["id"],
-                child["body"],
-                child["created_at"],
-                child["post_id"],
-                child["parent_comment_id"],
-                child["user_id"],
-                child["child_comments_count"],
-                child["maker"],
-                child["user"],
-                child["child_comments"],
-            )
+            to_insert = helpers.parse_comments(child)
             child_objects.append(to_insert)
 
         return child_objects
