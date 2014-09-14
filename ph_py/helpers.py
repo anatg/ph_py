@@ -1,6 +1,7 @@
 __author__ = 'ag'
 
 from ph_py.models.post import Post
+from ph_py.models.notification import Notification
 
 def create_post(responses):
     response = [Post(
@@ -20,3 +21,4 @@ def create_post(responses):
     ) for response in responses
     ]
     return response
+

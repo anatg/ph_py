@@ -5,7 +5,7 @@ from ph_py.models.user import User
 
 class Post:
     def __init__(self, post_id, name, tagline, created_at, day, comments_count, votes_count, discussion_url,
-                 redirect_url, screenshot_url, maker_inside, user, current_user=None):
+                 redirect_url, screenshot_url, maker_inside, user, current_user=None, comments=None):
         self.id = post_id
         self.name = name
         self.tagline = tagline
@@ -27,3 +27,5 @@ class Post:
             user["image_url"],
             user["profile_url"]
         )
+
+        #TODO comments, votes, related_links

@@ -50,6 +50,7 @@ class ProductHuntClient:
 
         return url
 
+    #oauth
     def oauth_user_token(self, code):
         data = {
             "client_id": self.client_id,
@@ -72,6 +73,7 @@ class ProductHuntClient:
         self.client_auth = self.make_request("POST", "oauth/token", data, "")
         return self.client_auth
 
+    #Post-related functions
     def get_todays_posts(self, context="client"):
         responses = self.make_request("GET", "posts", None, context)
         responses = responses["posts"]
@@ -86,6 +88,36 @@ class ProductHuntClient:
         responses = self.make_request("GET", "posts", {"day": day}, context)
         responses = responses["posts"]
         return helpers.create_post(responses)
+
+    #need to parse for comments, votes, and related links
+    def get_details_of_post(self, post_id, context='client'):
+        responses = self.make_request("GET", "posts/%d" % post_id, None, context)
+        responses = responses["posts"]
+        return helpers.create_post(responses)
+
+    #need write-access for API
+    def create_a_post(self, url, name, tagline):
+        data = {"post": {"url": url,
+                         "name": name,
+                         "tagline": tagline}}
+        response = self.make_request("POST", "posts", data, 'user')
+        response = response["post"]
+        return helpers.create_post(response)
+
+    def show_notifications(self, older=None, newer=None, per_page=100, order=None):
+        data = {
+            "per_page": per_page
+        }
+        if older:
+            data["older"] = older
+        if newer:
+            data["newer"] = newer
+        if order:
+            data["order"] = order
+
+        notifications = self.make_request("GET", "notifications", data, context='user')
+        notifications = notifications["notifications"]
+
 
     def get_users(self, older=None, newer=None, per_page=100, order=None, context="client"):
         data = {
@@ -135,7 +167,10 @@ def main():
     redirect_uri = "http://localhost:5000"
 
     phc = ProductHuntClient(client_id, client_secret, redirect_uri)
-    phc.oauth_client_token()
+    #print phc.build_authorize_url()
+    phc.oauth_user_token("83098fc2c2c436393ac3a348c0d98bb090c430070eb8c3125189c6d996e2ec57")
+    x = phc.create_a_post("http://beardedspice.com", "Bearded Spice", "Mac Media Keys for the Masses")
+    print "hello"
 
 
 if __name__ == "__main__":
