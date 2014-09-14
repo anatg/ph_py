@@ -110,7 +110,7 @@ def parse_votes(votes):
                 vote["post_id"],
                 vote["user"]
             ) for vote in votes]
-    else:
+    elif votes:
         Vote(
             votes["id"],
             votes["created_at"],
@@ -131,7 +131,7 @@ def parse_related_links(related_links):
                 related_link["post_id"],
                 related_link["user_id"],
             ) for related_link in related_links]
-    else:
+    elif related_links:
         RelatedLink(
             related_links["id"],
             related_links["url"],
@@ -158,7 +158,7 @@ def parse_comments(comments):
                 comment["user"],
                 comment["child_comments"]
             ) for comment in comments]
-    else:
+    elif comments:
         Comment(
             comments["id"],
             comments["body"],
