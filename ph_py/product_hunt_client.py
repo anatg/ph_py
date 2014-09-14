@@ -200,6 +200,29 @@ class ProductHuntClient:
         comments = self.make_request("GET", "posts/%d/comments" % post_id, data, context)
         return helpers.parse_comments(comments["comments"])
 
+    def create_comment(self, body, post_id, parent_comment_id=None):
+        data = {
+            "comment": {
+                "body": body
+            }
+        }
+
+        if parent_comment_id:
+            data["comment"]["parent_comment_id"] = parent_comment_id
+
+        comment = self.make_request("POST", "posts/%d/comments" % post_id, data, "user")
+        return helpers.parse_comments(comment["comment"])
+
+    def update_comment(self, body, comment_id):
+        data = {
+            "comment": {
+                "body": body
+            }
+        }
+
+        comment = self.make_request("PUT", "comments/%d" % comment_id, data, "user")
+        return helpers.parse_comments(comment["comment"])
+
     # Detail-related functions
     def get_details(self):
         details = self.make_request("GET", "me", None, "user")
