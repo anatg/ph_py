@@ -190,6 +190,10 @@ class ProductHuntClient:
         votes = self.make_request("GET", "posts/%d/votes" % post_id, data, context)
         return helpers.parse_votes(votes["votes"])
 
+    # Details for user
+    def get_details(self):
+        details = self.make_request("GET", "me", None, "user")
+        return helpers.parse_details(details["user"])
 
 def main():
     client_id = "35587d189b3370c86629d4ba77027cfcaa6130970e4d3217da383042450ff501"
@@ -198,9 +202,9 @@ def main():
 
     phc = ProductHuntClient(client_id, client_secret, redirect_uri)
     #print phc.build_authorize_url()
-    phc.oauth_user_token("d8f6953f5c7137ee4ea2760457152cf8988195e8486d560c3eb77020068ac609")
+    phc.oauth_user_token("")
     # x = phc.create_a_post("http://beardedspice.com", "Bearded Spice", "Mac Media Keys for the Masses")
-    print phc.show_notifications()
+    print phc.get_details()
     print "hello"
 
 

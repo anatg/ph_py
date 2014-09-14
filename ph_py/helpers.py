@@ -1,6 +1,7 @@
 from ph_py.models.post import Post
 from ph_py.models.user import User
 from ph_py.models.vote import Vote
+from ph_py.models.details import Details
 from ph_py.models.notification import Notification
 
 
@@ -16,6 +17,19 @@ def parse_notifications(notifications):
             notification["to_user"]
         ) for notification in notifications
     ]
+
+def parse_details(details):
+    return Details(
+        details["user"],
+        details["votes_count"],
+        details["posts_count"],
+        details["maker_of_count"],
+        details["email"],
+        details["role"],
+        details["permissions"],
+        details["notifications"],
+        details["first_time_user"]
+    )
 
 
 def parse_posts(posts):
