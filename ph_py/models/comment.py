@@ -1,5 +1,3 @@
-__author__ = 'ag'
-
 from ph_py.models.user import User
 
 
