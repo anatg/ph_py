@@ -19,6 +19,7 @@ def parse_notifications(notifications):
         ) for notification in notifications
     ]
 
+
 def parse_details(details):
     return Details(
         details["id"],

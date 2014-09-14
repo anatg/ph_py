@@ -186,11 +186,12 @@ class ProductHuntClient:
         votes = self.make_request("GET", "posts/%d/votes" % post_id, data, context)
         return helpers.parse_votes(votes["votes"])
 
-    # Details for user
+    # Detail-related functions
     def get_details(self):
         details = self.make_request("GET", "me", None, "user")
         return helpers.parse_details(details["user"])
 
+    # Related-links functions
     def create_related_link(self, post_id, url, title=None):
         data = {"url": url}
 
@@ -211,11 +212,9 @@ def main():
     client_id = "35587d189b3370c86629d4ba77027cfcaa6130970e4d3217da383042450ff501"
     client_secret = "42a385e7aae68c1ef243ae2634864ee7bc0576f66550f22149d510173c728cd8"
     redirect_uri = "http://localhost:5000"
-
     dev_token = "fcebcd0400a1a4b909e3e754af9a9b21d4e0f93551598e6ab3d231b8bd9b703d"
+
     phc = ProductHuntClient(client_id, client_secret, redirect_uri, dev_token)
-
-
 
 
 if __name__ == "__main__":
