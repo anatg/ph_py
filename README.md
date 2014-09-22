@@ -1,4 +1,4 @@
-ph-py
+ph_py
 =========
 A Python wrapper for Product Hunt's REST API
 
@@ -15,29 +15,38 @@ Authentication
 ---
 Product Hunt's API uses the OAuth2 protocol for authentication.
 
-### Obtaining an access token
+### Obtaining app credentials
 
 
   - Create your app via the [app dashboard]
-  - Plug in your Redirect URI, API Key and API Secret
+  - Obtain an API Key and API Secret by entering your application name and redirect URI
 
-### Using an access token
-Once you have an access token, you can pass that token into the Product Hunt Client constructor. When committing your work, though, make sure to remove the codes in order to not expose your custom application's credentials. 
+### Using the ProductHuntClient class
+Once you have your app credentials, you can pass them to the ProductHuntClient initializer. If your code is open source,
+ make sure to remove the credentials to prevent others from using them. Environment variables can help with this.
 
 
 ```python
-    client_id = "YOUR_CLIENT_ID"
-    client_secret = "YOUR_CLIENT_SECRET"
+    client_id = YOUR_CLIENT_ID
+    client_secret = YOUR_CLIENT_SECRET
     redirect_uri = "http://localhost:5000"
 
     phc = ProductHuntClient(client_id, client_secret, redirect_uri)
 
 ```
 
-In order to authenticate using OAuth 2, pass in the "code" generated in your favorite browser from
+Note: if you have a
+
+From here, you'll need to either obtain a client or user token.  See below:
+
+### Authorization
+In order to authenticate using OAuth2, the user must authorize your app. To help with this step, we've built a function
+to build the authorization url.
+
 ```python
 phc.build_authorize_url()
 ```
+
 and enter it as a "client" or a "user":
 ```python
 code = "CODE_RETURNED_IN_BROWSER"
