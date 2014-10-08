@@ -1,6 +1,12 @@
-import helpers as h
 import requests as r
-from error import ProductHuntError
+from .helpers import parse_posts
+from .helpers import parse_users
+from .helpers import parse_votes
+from .helpers import parse_details
+from .helpers import parse_comments
+from .error import ProductHuntError
+from .helpers import parse_notifications
+from .helpers import parse_related_links
 from simplejson.scanner import JSONDecodeError
 
 
@@ -93,23 +99,23 @@ class ProductHuntClient:
         responses = self.make_request("GET", "posts", None, context)
         responses = responses["posts"]
 
-        return h.parse_posts(responses)
+        return parse_posts(responses)
 
     def get_previous_days_posts(self, days_ago, context="client"):
         responses = self.make_request("GET", "posts", {"days_ago": days_ago}, context)
         responses = responses["posts"]
 
-        return h.parse_posts(responses)
+        return parse_posts(responses)
 
     def get_specific_days_posts(self, day, context="client"):
         responses = self.make_request("GET", "posts", {"day": day}, context)
         responses = responses["posts"]
 
-        return h.parse_posts(responses)
+        return parse_posts(responses)
 
     def get_details_of_post(self, post_id, context="client"):
         post = self.make_request("GET", "posts/%d" % post_id, None, context)
-        return h.parse_posts(post["post"])
+        return parse_posts(post["post"])
 
     def create_a_post(self, url, name, tagline):
         data = {
@@ -120,7 +126,7 @@ class ProductHuntClient:
             }
         }
         post = self.make_request("POST", "posts", data, "user")
-        return h.parse_posts(post["post"])
+        return parse_posts(post["post"])
 
     # Notification-related functions
     def show_notifications(self, older=None, newer=None, per_page=100, order=None):
@@ -135,11 +141,11 @@ class ProductHuntClient:
             data["order"] = order
 
         notifications = self.make_request("GET", "notifications", data, "user")
-        return h.parse_notifications(notifications["notifications"])
+        return parse_notifications(notifications["notifications"])
 
     def clear_notifications(self):
         notifications = self.make_request("DELETE", "notifications", None, "user")
-        return h.parse_notifications(notifications["notifications"])
+        return parse_notifications(notifications["notifications"])
 
     # User-related functions
     def get_users(self, older=None, newer=None, per_page=100, order=None, context="client"):
@@ -153,21 +159,21 @@ class ProductHuntClient:
             data["order"] = order
 
         users = self.make_request("GET", "users", data, context)
-        return h.parse_users(users["users"])
+        return parse_users(users["users"])
 
     def get_user(self, username, context="client"):
         user = self.make_request("GET", "users/%s" % username, None, context)
-        return h.parse_users(user["user"])
+        return parse_users(user["user"])
 
     # Vote-related functions
     def create_vote(self, post_id):
         vote = self.make_request("POST", "posts/%d/vote" % post_id, None, "user")
-        return h.parse_votes(vote)
+        return parse_votes(vote)
 
     def delete_vote(self, post_id):
         vote = self.make_request("DELETE", "posts/%d/vote" % post_id, None, "user")
 
-        return h.parse_votes(vote)
+        return parse_votes(vote)
 
     def get_user_votes(self, user_id, older=None, newer=None, per_page=100, order=None, context="client"):
         data = {"per_page": per_page}
@@ -180,7 +186,7 @@ class ProductHuntClient:
             data["order"] = order
 
         votes = self.make_request("GET", "users/%d/votes" % user_id, data, context)
-        return h.parse_votes(votes["votes"])
+        return parse_votes(votes["votes"])
 
     def get_post_votes(self, post_id, older=None, newer=None, per_page=100, order=None, context="client"):
         data = {"per_page": per_page}
@@ -193,7 +199,7 @@ class ProductHuntClient:
             data["order"] = order
 
         votes = self.make_request("GET", "posts/%d/votes" % post_id, data, context)
-        return h.parse_votes(votes["votes"])
+        return parse_votes(votes["votes"])
 
     # Comment-related functions
     def get_comments(self, post_id, older=None, newer=None, per_page=100, order=None, context="client"):
@@ -207,7 +213,7 @@ class ProductHuntClient:
             data["order"] = order
 
         comments = self.make_request("GET", "posts/%d/comments" % post_id, data, context)
-        return h.parse_comments(comments["comments"])
+        return parse_comments(comments["comments"])
 
     def create_comment(self, body, post_id, parent_comment_id=None):
         data = {
@@ -220,7 +226,7 @@ class ProductHuntClient:
             data["comment"]["parent_comment_id"] = parent_comment_id
 
         comment = self.make_request("POST", "posts/%d/comments" % post_id, data, "user")
-        return h.parse_comments(comment["comment"])
+        return parse_comments(comment["comment"])
 
     def update_comment(self, body, comment_id):
         data = {
@@ -230,12 +236,12 @@ class ProductHuntClient:
         }
 
         comment = self.make_request("PUT", "comments/%d" % comment_id, data, "user")
-        return h.parse_comments(comment["comment"])
+        return parse_comments(comment["comment"])
 
     # User Detail related functions
     def get_details(self):
         details = self.make_request("GET", "me", None, "user")
-        return h.parse_details(details["user"])
+        return parse_details(details["user"])
 
     # Related-links functions
     def create_related_link(self, post_id, url, title=None):
@@ -245,10 +251,10 @@ class ProductHuntClient:
             data["title"] = title
 
         related_link = self.make_request("POST", "posts/%d/related_links" % post_id, data, "user")
-        return h.parse_related_links(related_link)
+        return parse_related_links(related_link)
     
     def update_related_link(self, post_id, related_link_id, title):
         data = {"title": title}
 
         related_link = self.make_request("PUT", "posts/%d/related_links/%d" % (post_id, related_link_id), data, "user")
-        return h.parse_related_links(related_link)
+        return parse_related_links(related_link)

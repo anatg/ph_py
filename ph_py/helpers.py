@@ -1,9 +1,10 @@
-from ph_py.models.post import *
-from ph_py.models.vote import *
-from ph_py.models.comment import *
-from ph_py.models.related_link import *
-from ph_py.models.user_details import *
-from ph_py.models.notification import *
+from .models.post import Post
+from .models.vote import Vote
+from .models.user import User
+from .models.comment import Comment
+from .models.related_link import RelatedLink
+from .models.user_details import UserDetails
+from .models.notification import Notification
 
 
 def parse_notifications(notifications):
