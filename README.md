@@ -84,7 +84,8 @@ This specifies from which context the request should be made. The default is `"c
 
 ## Posts
 
-- ### Today's posts
+- **Today's posts**
+
   Note: comments, votes, and related links only available when requesting a specific post)
     * Input:
         * *Optional*: `context`
@@ -93,7 +94,7 @@ get_todays_posts(context="client")
 ```
   * Output:
     * Array of [Post]s
-- ### Previous day's posts
+- **Previous day's posts**
   * Input:
     * Required: `days_ago` (specify how many days ago, e.g. yesterday => 1)
     * *Optional*: `context`
@@ -102,7 +103,7 @@ get_previous_days_posts(days_ago, context="client")
 ```
   * Output:
     * Array of [Post]s
-- ### Specific day's posts
+- **Specific day's posts**
     * Input:
         * Required: `day` (date in format of `"YYYY-MM-DD"`)
         * *Optional*: `context`
@@ -111,7 +112,7 @@ get_specific_days_posts(day, context="client")
 ```
     * Output:
         * [Post]
-- ### Details of a post
+- **Details of a post**
     * Input:
         * Required: `post_id`
         * *Optional*: `context`
@@ -120,7 +121,7 @@ get_details_of_post(post_id, context="client")
 ```
     * Output:
         * [Post] (with [Comment]s, [Vote]s, and [Related Link]s)
-- ### Create a post (requires write access to API)
+- **Create a post (requires write access to API)**
     * Input:
         * Required: `url`
         * Required: `name` (name of the product)
@@ -133,7 +134,7 @@ create_a_post(url, name, tagline)
 
 ## Notifications
 
-- ### Show Notifications
+- **Show Notifications**
   * Input:
     * *Optional*: `older` (get only records older than the provided id)
     * *Optional*: `newer` (get only records newer than the provided id)
@@ -144,7 +145,7 @@ show_notifications(older=None, newer=None, per_page=100, order=None)
 ```
   * Output:
     * Array of [Notification]s
-- ### Clear Notifications (requires write access to API)
+- **Clear Notifications (requires write access to API)**
 ```python
 clear_notifications():
 ```
@@ -153,7 +154,7 @@ clear_notifications():
 
 ## User
 
-- ### Get Users
+- **Get Users**
   * Input:
     * *Optional*: `older` (get only records older than the provided id)
     * *Optional*: `newer` (get only records newer than the provided id)
@@ -165,7 +166,7 @@ get_users(older=None, newer=None, per_page=100, order=None, context="client")
 ```
   * Output:
     * Array of [User]s
-- ### Get User
+- **Get User**
   * Input:
     * Required: `username`
     * *Optional*: `context`
