@@ -5,11 +5,11 @@ A Python wrapper for Product Hunt's REST API
 Installation
 ---
 ```python
-pip install alephnull
+pip install ph_py
 ```
-Requires
-    * requests
-    * simplejson
+Dependencies:
+* requests
+* simplejson
 
 Authentication
 ---
@@ -23,207 +23,163 @@ Product Hunt's API uses the OAuth2 protocol for authentication.
 
 ### Using the ProductHuntClient class
 Once you have your app credentials, you can pass them to the ProductHuntClient initializer. If your code is open source,
- make sure to remove the credentials to prevent others from using them. Environment variables can help with this.
+make sure to remove the credentials to prevent others from using them. Environment variables can help with this.
 
-
+The library will automatically obtain a client token upon initialization.
 ```python
-    client_id = YOUR_CLIENT_ID
-    client_secret = YOUR_CLIENT_SECRET
-    redirect_uri = "http://localhost:5000"
+from ph_py import ProductHuntClient
 
-    phc = ProductHuntClient(client_id, client_secret, redirect_uri)
+client_id = YOUR_CLIENT_ID
+client_secret = YOUR_CLIENT_SECRET
+redirect_uri = "http://localhost:5000"
 
+phc = ProductHuntClient(client_id, client_secret, redirect_uri)
+
+# Example request
+for post in phc.get_todays_posts():
+    print(post.tagline)
 ```
 
-Note: if you have a
-
-From here, you'll need to either obtain a client or user token.  See below:
-
-### Authorization
-In order to authenticate using OAuth2, the user must authorize your app. To help with this step, we've built a function
-to build the authorization url.
+### User Authorization
+In order to authenticate using OAuth2, the user must authorize your app. To accomplish this flow, we've built some nice wrappers!
 
 ```python
-phc.build_authorize_url()
+import webbrowser
+from ph_py import ProductHuntClient
+
+client_id = YOUR_CLIENT_ID
+client_secret = YOUR_CLIENT_SECRET
+redirect_uri = "http://localhost:5000"
+phc = ProductHuntClient(client_id, client_secret, redirect_uri)
+
+webbrowser.open(phc.build_authorize_url())
+code = Input("What is the code? ") # Python 3x
+#code = raw_Input("What is the code? ") # Python 2x
+
+# Sets user auth
+phc.oauth_user_token(code)
+
+user_details = phc.get_current_user_details()
+print(user_details.email)
 ```
 
-and enter it as a "client" or a "user":
+Note: if you have a developer token, you can optionally initialize with it as well (skipping authorization step).
 ```python
-code = "CODE_RETURNED_IN_BROWSER"
-    phc.oauth_user_token(code)
-    phc.oauth_client_token()
+from ph_py import ProductHuntClient
+
+client_id = YOUR_CLIENT_ID
+client_secret = YOUR_CLIENT_SECRET
+redirect_uri = "http://localhost:5000"
+dev_token = YOUR_DEV_TOKEN
+
+phc = ProductHuntClient(client_id, client_secret, redirect_uri, dev_token)
+
+user_details = phc.get_current_user_details()
+print(user_details.email)
 ```
+
 #### Context
-```"context"``` is passed around in many of the fucntions as an optional parameter. The context may be either a ```"client"``` or ```"user"```. All functions involving "context" default to "client" unless otherwise specified
+`context` is passed around in many of the ProductHuntClient functions as an optional parameter. The context may be either a `"client"` or `"user"`.
+This specifies from which context the request should be made. The default is `"client"`, except for endpoints take actions on or about a specific user.
 
-##Posts
+## Posts
 
-###GET:
-
-- ####Today's posts
-    * INPUT: 
-        * *Optional* :context
+- ### Today's posts
+  Note: comments, votes, and related links only available when requesting a specific post)
+    * Input:
+        * *Optional*: `context`
 ```python
-phc.get_todays_posts(context="client")
+get_todays_posts(context="client")
 ```
-    * OUTPUT:
-        * today's posts
-        
-- ####Previous day's posts 
-    * INPUT: 
-        * ```days_ago```: specify how many days ago (yesterday = 1)
-        * *Optional* :context
+  * Output:
+    * Array of [Post]s
+- ### Previous day's posts
+  * Input:
+    * Required: `days_ago` (specify how many days ago, e.g. yesterday => 1)
+    * *Optional*: `context`
 ```python
-phc.get_previous_days_posts(days_ago, context="client")
+get_previous_days_posts(days_ago, context="client")
 ```
-    * OUTPUT:
-        * previous day's posts
-        
-- ####Specific day's posts
-    * INPUT:
-        * ```day```: date in format of ```"YYYY-MM-DD"```
-        * *Optional* :context
+  * Output:
+    * Array of [Post]s
+- ### Specific day's posts
+    * Input:
+        * Required: `day` (date in format of `"YYYY-MM-DD"`)
+        * *Optional*: `context`
 ```python
-phc.get_specific_days_posts(day, context="client")
+get_specific_days_posts(day, context="client")
 ```
-
-    * OUTPUT:
-        * specific days posts
-        
-- ####Details of a post
-
-    * INPUT:
-        * ```post_id```: post's id
-        * *Optional* :context    
+    * Output:
+        * [Post]
+- ### Details of a post
+    * Input:
+        * Required: `post_id`
+        * *Optional*: `context`
 ```python
-phc.get_details_of_post(post_id, context="client")
+get_details_of_post(post_id, context="client")
 ```
-    * OUTPUT:
-        * details of a post
-        
-###POST:
-
-- ####Create a post
-    * INPUT:
-        * ```url```: url to post
-        * ```name```: name of the product
-        * ```tagline```: tagline of the product
+    * Output:
+        * [Post] (with [Comment]s, [Vote]s, and [Related Link]s)
+- ### Create a post (requires write access to API)
+    * Input:
+        * Required: `url`
+        * Required: `name` (name of the product)
+        * Required: `tagline` (tagline of the product)
 ```python
-phc.create_a_post(url, name, tagline)
+create_a_post(url, name, tagline)
 ```
-    * OUTPUT:
-        * status code(201 if created)
+    * Output:
+        * [Post]
 
-##Notifications
+## Notifications
 
-###GET:
-
-- ####Show notifications
-    * INPUT:
-        * *Optional*: older
-        * *Optional*: newer
-        * *Optional*: per_page (>= 100)
-        * *Optional*: order
-
-```
-phc.show_notifications(older=None, newer=None, per_page=100, order=None)
-```
-    * OUTPUT:
-        * authenticated user's notifications
-
-
-###DELETE:
-
-- #### Clear notifications
-    * INPUT: (none)
-```
-phc.clear_notifications()
-```
-    * OUPUT:
-        * status code (200 if successfully deleted)
-
-
-##User
-
-###GET:
-- ####Get all users
-    * INPUT:
-        * *Optional*: older
-        * *Optional*: newer
-        * *Optional*: per_page (>= 100)
-        * *Optional*: order
-        * *Optional*: context
-    
-```
-phc.get_users(older=None, newer=None, per_page=100, order=None, context="client") 
-```
-* OUTPUT:
-    * all of PH's users
-
-- ####Get a specific user
-    * INPUT: 
-        * ```username```
-        * *Optional*: context
+- ### Show Notifications
+  * Input:
+    * *Optional*: `older` (get only records older than the provided id)
+    * *Optional*: `newer` (get only records newer than the provided id)
+    * *Optional*: `per_page` (define the amount of records sent per call, max 100)
+    * *Optional*: `order` (define the order you want to receive the records, does not affect older/newer behavior)
 ```python
-phc.get_user(username, context="client")
+show_notifications(older=None, newer=None, per_page=100, order=None)
 ```
-    * OUTPUT:
-        * a specific user
-
-##Votes
-
-###GET
-- ####Get a user's votes
-    *INPUT
-        * ```user_id```
-        * *Optional*: older
-        * *Optional*: newer
-        * *Optional*: per_page (>= 100)
-        * *Optional*: order
-        * *Optional*: context
+  * Output:
+    * Array of [Notification]s
+- ### Clear Notifications (requires write access to API)
 ```python
-ghc.get_user_votes(user_id, older=None, newer=None, per_page=100, order=None, context="client")
+clear_notifications():
 ```
-    *OUTPUT
-        * all of a user's votes
+  * Output:
+    * ([Docs](https://api.producthunt.com/v1/docs/notifications/notificationsdestroy__clear_your_notifications_count) state [Notification]s are returned, but can't verify without write access :pensive:)
 
-- ####Get a post's votes
-    * INPUT
-        * ```post_id```
-        * *Optional*: older
-        * *Optional*: newer
-        * *Optional*: per_page (>= 100)
-        * *Optional*: order
-        * *Optional*: context
+## User
 
+- ### Get Users
+  * Input:
+    * *Optional*: `older` (get only records older than the provided id)
+    * *Optional*: `newer` (get only records newer than the provided id)
+    * *Optional*: `per_page` (define the amount of records sent per call, max 100)
+    * *Optional*: `order` (define the order you want to receive the records, does not affect older/newer behavior)
+    * *Optional*: `context`
 ```python
-phc.get_post_votes(post_id, older=None, newer=None, per_page=100, order=None, context="client")
+get_users(older=None, newer=None, per_page=100, order=None, context="client")
 ```
-    * OUTPUT:
-        * all of a post's votes
-
-###POST
-- ####Create a vote
-    * INPUT
-        * ```post_id```
-
+  * Output:
+    * Array of [User]s
+- ### Get User
+  * Input:
+    * Required: `username`
+    * *Optional*: `context`
 ```python
-phc.create_vote(post_id)
+get_user(username, context="client"):
 ```
-    * OUTPUT
-        * a vote
-
-
-###DELETE
-- ###Delete a vote
-    *INPUT
-        * ```post_id```
-```python
-phc.delete_vote(post_id)
-```
-    *OUTPUT
-        * deleted vote
-
+  * Output:
+    * [User]
 
 
 [app dashboard]:https://www.producthunt.com/v1/oauth/applications
+[Post]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/post.py
+[Comment]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/comment.py
+[Vote]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/vote.py
+[Related Link]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/related_link.py
+[Notification]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/notification.py
+[User]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/user.py

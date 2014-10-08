@@ -58,11 +58,7 @@ def parse_posts(posts):
                 post["screenshot_url"],
                 post["maker_inside"],
                 post["user"],
-                post["current_user"] if "current_user" in post else None,
-                post["comments"],
-                post["votes"],
-                post["related_links"]
-
+                post["current_user"] if "current_user" in post else None
             ) for post in posts]
     else:
         return Post(

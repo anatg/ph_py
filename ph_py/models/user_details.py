@@ -19,6 +19,6 @@ class UserDetails:
         self.maker_of_count = maker_of_count
         self.email = email
         self.role = role
-        self.role = permissions
+        self.permissions = permissions
         self.notifications = notifications
         self.first_time_user = first_time_user

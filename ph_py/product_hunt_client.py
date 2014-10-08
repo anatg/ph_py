@@ -26,12 +26,12 @@ class ProductHuntClient:
         else:
             self.user_auth = None
 
-        self.client_auth = None
+        self.client_auth = self.oauth_client_token()
 
     def build_header(self, context):
         if context == "client":
             if self.client_auth is None:
-                raise ProductHuntError("No client authenticated!")
+                self.oauth_client_token()
 
             return {"Authorization": "Bearer %s" % self.client_auth["access_token"]}
         elif context == "user":
@@ -40,7 +40,7 @@ class ProductHuntClient:
 
             return {"Authorization": "Bearer %s" % self.user_auth["access_token"]}
 
-    def make_request(self, method, route, data, context=""):
+    def make_request(self, method, route, data, context="", retry=False):
         url = self.API_BASE + route
 
         headers = {}
@@ -59,7 +59,11 @@ class ProductHuntClient:
         try:
             json_data = response.json()
             if response.status_code in self.ERROR_CODES:
-                raise ProductHuntError(json_data["error_description"], response.status_code)
+                if response.status_code == 401 and context == "client" and not retry:
+                    self.oauth_client_token()
+                    self.make_request(method, route, data, context, True)
+                else:
+                    raise ProductHuntError(json_data["error_description"], response.status_code)
 
             return json_data
         except JSONDecodeError:
@@ -239,7 +243,7 @@ class ProductHuntClient:
         return parse_comments(comment["comment"])
 
     # User Detail related functions
-    def get_details(self):
+    def get_current_user_details(self):
         details = self.make_request("GET", "me", None, "user")
         return parse_details(details["user"])
 
