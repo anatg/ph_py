@@ -87,50 +87,50 @@ This specifies from which context the request should be made. The default is `"c
 - **Today's posts**
 
   Note: comments, votes, and related links only available when requesting a specific post)
-    * Input:
-        * *Optional*: `context`
-```python
-get_todays_posts(context="client")
-```
+  * Input:
+      * *Optional*: `context`
+  ```python
+  get_todays_posts(context="client")
+  ```
   * Output:
     * Array of [Post]s
 - **Previous day's posts**
   * Input:
     * Required: `days_ago` (specify how many days ago, e.g. yesterday => 1)
     * *Optional*: `context`
-```python
-get_previous_days_posts(days_ago, context="client")
-```
+  ```python
+  get_previous_days_posts(days_ago, context="client")
+  ```
   * Output:
     * Array of [Post]s
 - **Specific day's posts**
-    * Input:
-        * Required: `day` (date in format of `"YYYY-MM-DD"`)
-        * *Optional*: `context`
-```python
-get_specific_days_posts(day, context="client")
-```
-    * Output:
-        * [Post]
+  * Input:
+    * Required: `day` (date in format of `"YYYY-MM-DD"`)
+    * *Optional*: `context`
+  ```python
+  get_specific_days_posts(day, context="client")
+  ```
+  * Output:
+    * [Post]
 - **Details of a post**
-    * Input:
-        * Required: `post_id`
-        * *Optional*: `context`
-```python
-get_details_of_post(post_id, context="client")
-```
-    * Output:
-        * [Post] (with [Comment]s, [Vote]s, and [Related Link]s)
+  * Input:
+    * Required: `post_id`
+    * *Optional*: `context`
+  ```python
+  get_details_of_post(post_id, context="client")
+  ```
+  * Output:
+    * [Post] (with [Comment]s, [Vote]s, and [Related Link]s)
 - **Create a post (requires write access to API)**
-    * Input:
-        * Required: `url`
-        * Required: `name` (name of the product)
-        * Required: `tagline` (tagline of the product)
-```python
-create_a_post(url, name, tagline)
-```
-    * Output:
-        * [Post]
+  * Input:
+    * Required: `url`
+    * Required: `name` (name of the product)
+    * Required: `tagline` (tagline of the product)
+  ```python
+  create_a_post(url, name, tagline)
+  ```
+  * Output:
+    * [Post]
 
 ## Notifications
 
@@ -140,15 +140,15 @@ create_a_post(url, name, tagline)
     * *Optional*: `newer` (get only records newer than the provided id)
     * *Optional*: `per_page` (define the amount of records sent per call, max 100)
     * *Optional*: `order` (define the order you want to receive the records, does not affect older/newer behavior)
-```python
-show_notifications(older=None, newer=None, per_page=100, order=None)
-```
+  ```python
+  show_notifications(older=None, newer=None, per_page=100, order=None)
+  ```
   * Output:
     * Array of [Notification]s
 - **Clear Notifications (requires write access to API)**
-```python
-clear_notifications():
-```
+  ```python
+  clear_notifications():
+  ```
   * Output:
     * ([Docs](https://api.producthunt.com/v1/docs/notifications/notificationsdestroy__clear_your_notifications_count) state [Notification]s are returned, but can't verify without write access :pensive:)
 
@@ -161,21 +161,20 @@ clear_notifications():
     * *Optional*: `per_page` (define the amount of records sent per call, max 100)
     * *Optional*: `order` (define the order you want to receive the records, does not affect older/newer behavior)
     * *Optional*: `context`
-```python
-get_users(older=None, newer=None, per_page=100, order=None, context="client")
-```
+  ```python
+  get_users(older=None, newer=None, per_page=100, order=None, context="client")
+  ```
   * Output:
     * Array of [User]s
 - **Get User**
   * Input:
     * Required: `username`
     * *Optional*: `context`
-```python
-get_user(username, context="client"):
-```
+  ```python
+  get_user(username, context="client"):
+  ```
   * Output:
     * [User]
-
 
 [app dashboard]:https://www.producthunt.com/v1/oauth/applications
 [Post]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/post.py
