@@ -14,7 +14,7 @@ setup(
     version='0.1',
 
     description='Product Hunt Beta Python Library',
-    long_description='Client library for the Product Hunt beta API. Complete with OAuth and both read/write capabilities (to use write functionality, your app needs access)',
+    long_description='Client library for the Product Hunt beta API. Complete with OAuth and read/write capabilities (to use write functionality, your app needs access)',
 
     # The project's main homepage.
     url='https://github.com/anatg/ph_py',
