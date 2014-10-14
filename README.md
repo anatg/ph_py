@@ -13,7 +13,7 @@ Dependencies:
 * requests
 * simplejson
 
-## Beta API Note:
+## Beta API Note
 
 The Product Hunt API is in an early beta phase. As such, the official [docs] are super minimal. So, we implemented this library to the best of our knowledge.
 Also, since write access to the API is currently restricted, we had to build functions with write functionality solely off the public documentation (**there may be bugs**).
