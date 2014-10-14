@@ -316,10 +316,10 @@ except ProductHuntError as e
     * [Related Link]
 
 [app dashboard]:https://www.producthunt.com/v1/oauth/applications
-[Post]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/post.py
-[Comment]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/comment.py
-[Vote]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/vote.py
-[Related Link]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/related_link.py
-[Notification]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/notification.py
-[User]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/user.py
+[Post]:https://github.com/anatg/ph_py/blob/master/ph_py/models/post.py
+[Comment]:https://github.com/anatg/ph_py/blob/master/ph_py/models/comment.py
+[Vote]:https://github.com/anatg/ph_py/blob/master/ph_py/models/vote.py
+[Related Link]:https://github.com/anatg/ph_py/blob/master/ph_py/models/related_link.py
+[Notification]:https://github.com/anatg/ph_py/blob/master/ph_py/models/notification.py
+[User]:https://github.com/anatg/ph_py/blob/master/ph_py/models/user.py
 [docs]:https://www.producthunt.com/v1/docs/
