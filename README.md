@@ -1,6 +1,6 @@
 ph_py
 =========
-A Python wrapper for Product Hunt's REST API
+A Python wrapper for Product Hunt's REST API built with :
 
 Installation
 ---
@@ -10,6 +10,12 @@ pip install ph_py
 Dependencies:
 * requests
 * simplejson
+
+## Beta API Note:
+
+The Product Hunt API is in an early beta phase. As such, the [docs] are super minimal, so we implemented this library to the best of our knowledge.
+Also, since write access to the API is currently restricted, we had to build functions with write functionality solely off the public documentation (may be bugs).
+If you find any issues, please submit an issue or a pull request!
 
 Authentication
 ---
@@ -121,7 +127,7 @@ This specifies from which context the request should be made. The default is `"c
   ```
   * Output:
     * [Post] (with [Comment]s, [Vote]s, and [Related Link]s)
-- **Create a post (requires write access to API)**
+- **Create a post**
   * Input:
     * Required: `url`
     * Required: `name` (name of the product)
@@ -145,12 +151,12 @@ This specifies from which context the request should be made. The default is `"c
   ```
   * Output:
     * Array of [Notification]s
-- **Clear Notifications (requires write access to API)**
+- **Clear Notifications**
   ```python
   clear_notifications():
   ```
   * Output:
-    * ([Docs](https://api.producthunt.com/v1/docs/notifications/notificationsdestroy__clear_your_notifications_count) state [Notification]s are returned, but can't verify without write access :pensive:)
+    * [Notification]s
 
 ## User
 
@@ -176,6 +182,126 @@ This specifies from which context the request should be made. The default is `"c
   * Output:
     * [User]
 
+## Post Votes
+
+- **Vote for a Post**
+  * Input:
+    * Required: `post_id`
+  ```python
+  create_vote(post_id)
+  ```
+  * Output:
+    * [Vote]
+- **Delete a Vote**
+  * Input:
+    * Required: `post_id`
+  ```python
+  delete_vote(post_id)
+  ```
+  * Output:
+    * [Vote]
+- **Delete a Vote**
+  * Input:
+    * Required: `post_id`
+  ```python
+  delete_vote(post_id)
+  ```
+  * Output:
+    * [Vote]
+- **See all votes for a Post**
+  * Input:
+    * Required: `post_id`
+    * *Optional*: `older` (get only records older than the provided id)
+    * *Optional*: `newer` (get only records newer than the provided id)
+    * *Optional*: `per_page` (define the amount of records sent per call, max 100)
+    * *Optional*: `order` (define the order you want to receive the records, does not affect older/newer behavior)
+    * *Optional*: `context`
+  ```python
+  get_post_votes(post_id, older=None, newer=None, per_page=100, order=None, context="client"):
+  ```
+  * Output:
+    * Array of [Vote]s
+- **See all of a user's Votes**
+  * Input:
+    * Required: `user_id`
+    * *Optional*: `older` (get only records older than the provided id)
+    * *Optional*: `newer` (get only records newer than the provided id)
+    * *Optional*: `per_page` (define the amount of records sent per call, max 100)
+    * *Optional*: `order` (define the order you want to receive the records, does not affect older/newer behavior)
+    * *Optional*: `context`
+  ```python
+  get_user_votes(user_id, older=None, newer=None, per_page=100, order=None, context="client"):
+  ```
+  * Output:
+    * Array of [Vote]s
+
+## Comments
+
+- **Fetch a Post's Comments**
+  * Input:
+    * Required: `post_id`
+    * *Optional*: `older` (get only records older than the provided id)
+    * *Optional*: `newer` (get only records newer than the provided id)
+    * *Optional*: `per_page` (define the amount of records sent per call, max 100)
+    * *Optional*: `order` (define the order you want to receive the records, does not affect older/newer behavior)
+    * *Optional*: `context`
+  ```python
+  get_comments(post_id, older=None, newer=None, per_page=100, order=None, context="client"):
+  ```
+  * Output:
+    * Array of [Comment]s
+- **Create a Comment (or comment reply)**
+  * Input:
+    * Required: `body`
+    * Required: `post_id`
+    * *Optional*: `parent_comment_id`
+  ```python
+  create_comment(body, post_id, parent_comment_id=None):
+  ```
+  * Output:
+    * [Comment]
+- **Update Comment**
+  * Input:
+    * Required: `body`
+    * Required: `comment_id`
+  ```python
+  update_comment(body, comment_id):
+  ```
+  * Output:
+    * [Comment]
+
+## Related-Links
+
+- **Create a Related-Link**
+  * Input:
+    * Required: `post_id`
+    * Required: `url`
+    * *Optional*: `title`
+  ```python
+  create_related_link(post_id, url, title=None):
+  ```
+  * Output:
+    * [Related Link]
+- **Update a Related-Link**
+  * Input:
+    * Required: `post_id`
+    * Required: `related_link_id`
+    * Required: `title`
+  ```python
+  update_related_link(post_id, related_link_id, title):
+  ```
+  * Output:
+    * [Related Link]
+- **Delete Related-Link**
+  * Input:
+    * Required: `body`
+    * Required: `related_link_id`
+  ```python
+  delete_related_link(post_id, related_link_id):
+  ```
+  * Output:
+    * [Related Link]
+
 [app dashboard]:https://www.producthunt.com/v1/oauth/applications
 [Post]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/post.py
 [Comment]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/comment.py
@@ -183,3 +309,4 @@ This specifies from which context the request should be made. The default is `"c
 [Related Link]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/related_link.py
 [Notification]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/notification.py
 [User]:https://github.com/Jasdev/ph_py/blob/master/ph_py/models/user.py
+[docs]:https://www.producthunt.com/v1/docs/

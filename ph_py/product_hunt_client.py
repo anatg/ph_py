@@ -262,3 +262,7 @@ class ProductHuntClient:
 
         related_link = self.make_request("PUT", "posts/%d/related_links/%d" % (post_id, related_link_id), data, "user")
         return parse_related_links(related_link)
+
+    def delete_related_link(self, post_id, related_link_id):
+        related_link = self.make_request("DELETE", "posts/%d/related_links/%d" % (post_id, related_link_id), None, "user")
+        return parse_related_links(related_link)
