@@ -90,6 +90,17 @@ print(user_details.email)
 `context` is passed around in many of the ProductHuntClient functions as an optional parameter. The context may be either a `"client"` or `"user"`.
 This specifies from which context the request should be made. The default is `"client"`, except for endpoints take actions on or about a specific user.
 
+### Error Handling
+ProductHuntError is the general error handler with access to the error message and status code:
+
+```python
+try
+    ...
+except ProductHuntError as e
+    print(e.error_message)
+    print(e.status_code)
+```
+
 ## Posts
 
 - **Today's posts**
