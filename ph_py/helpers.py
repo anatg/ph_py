@@ -3,6 +3,7 @@ from .models.vote import Vote
 from .models.user import User
 from .models.comment import Comment
 from .models.related_link import RelatedLink
+from .models.install_link import InstallLink
 from .models.user_details import UserDetails
 from .models.notification import Notification
 
@@ -77,7 +78,8 @@ def parse_posts(posts):
             posts["current_user"] if "current_user" in posts else None,
             posts["comments"],
             posts["votes"],
-            posts["related_links"]
+            posts["related_links"],
+            posts["install_links"]
         )
 
 
@@ -146,6 +148,22 @@ def parse_related_links(related_links):
             related_links["user_id"],
         )
 
+def parse_install_links(install_links):
+    if isinstance(install_links, list):
+        return [
+            InstallLink(
+                install_link["platform"],
+                install_link["created_at"],
+                install_link["redirect_url"],
+                install_link["post_id"],
+            ) for install_link in install_links]
+    elif install_links:
+        return InstallLink(
+                install_links["platform"],
+                install_links["created_at"],
+                install_links["redirect_url"],
+                install_links["post_id"],
+            )
 
 def parse_comments(comments):
     if isinstance(comments, list):

@@ -2,7 +2,7 @@ class Post:
 
     def __init__(self, post_id, name, tagline, created_at, day, comments_count, votes_count, discussion_url,
                  redirect_url, screenshot_url, maker_inside, user, current_user, comments=None, votes=None,
-                 related_links=None):
+                 related_links=None, install_links=None):
         from .. import helpers
 
         self.id = post_id
@@ -21,3 +21,4 @@ class Post:
         self.comments = helpers.parse_comments(comments)
         self.votes = helpers.parse_votes(votes)
         self.related_links = helpers.parse_related_links(related_links)
+        self.install_links = helpers.parse_install_links(install_links)
