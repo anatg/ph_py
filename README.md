@@ -2,7 +2,7 @@ ph_py
 =========
 A Python wrapper for Product Hunt's REST API
 
-Built with :yellow_heart: by [Anat](https://twitter.com/anat_gilboa) and [Jasdev](https://twitter.com/jasdev)
+Built by [Anat](https://twitter.com/anat_gilboa) and [Jasdev](https://twitter.com/jasdev)!
 
 Installation
 ---
